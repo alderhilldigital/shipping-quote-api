@@ -1,9 +1,9 @@
-#Shipping Quote API
+# Shipping Quote API
 
 This api accepts an API Key, an Origin, a Destination and 0 - 3 weights.  It performs a lookup, and returns price information for these parameters in the form of a JSON object.
 
 
-##Required parameters
+## Required parameters
 
 $_GET['key'] (string) - this is an api key to prevent unauthorised access to the api
 $_GET['origin'] (string) - this is a 2 letter iso country code
@@ -12,7 +12,7 @@ $_GET['destination'] (string) - this is a 2 letter iso country code
 If any required parameters are not provided, the api will return a 401 header response
 
 
-##Optional parameters
+## Optional parameters
 
 $_GET['weight1'] (double) - representing Kilograms
 $_GET['weight2'] (double) - representing Kilograms
@@ -21,7 +21,7 @@ $_GET['weight3'] (double) - representing Kilograms
 If no weight parameters are provided the api will use default values of 15, 20 and 30.  If any weights are passed, the api will return quotes for these weights only not using default values for the other(s).
 
 
-##Return format
+## Return format
 
 The api will return a JSON object with three child objects "passed", "express" and "economy".  The "passed" object simply contains the values the api has been passed (excluding the key of course).  The "express" object contains shipping quotes for express delivery, and the "economy" object contains shipping quotes for economy delivery.  These quotes are in an identical format as shown below:
 
