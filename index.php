@@ -222,18 +222,18 @@ $response = array(
         "weight3TotalPriceGBP" => isset($expressPricesGBP[2]) ? (double)($expressPricesGBP[2] * $expressFuel * $expressProfit) : null
     ),
     "economy" => array(
-        "weight1NetPriceGBP" => isset($economyPrices[0]) ? (double)$economyPrices[0] : null,
-        "weight2NetPriceGBP" => isset($economyPrices[1]) ? (double)$economyPrices[1] : null,
-        "weight3NetPriceGBP" => isset($economyPrices[2]) ? (double)$economyPrices[2] : null,
-        "weight1TotalPriceGBP" => isset($economyPrices[0]) ? (double)($economyPrices[0] * $economyFuel * $economyProfit * $economyVAT) : null,
-        "weight2TotalPriceGBP" => isset($economyPrices[1]) ? (double)($economyPrices[1] * $economyFuel * $economyProfit * $economyVAT) : null,
-        "weight3TotalPriceGBP" => isset($economyPrices[2]) ? (double)($economyPrices[2] * $economyFuel * $economyProfit * $economyVAT) : null,
         "weight1NetPriceEUR" => isset($economyPricesEUR[0]) ? (double)$economyPricesEUR[0] : null,
         "weight2NetPriceEUR" => isset($economyPricesEUR[1]) ? (double)$economyPricesEUR[1] : null,
         "weight3NetPriceEUR" => isset($economyPricesEUR[2]) ? (double)$economyPricesEUR[2] : null,
         "weight1TotalPriceEUR" => isset($economyPricesEUR[0]) ? (double)($economyPricesEUR[0] * $economyFuel * $economyProfit * $economyVAT) : null,
         "weight2TotalPriceEUR" => isset($economyPricesEUR[1]) ? (double)($economyPricesEUR[1] * $economyFuel * $economyProfit * $economyVAT) : null,
-        "weight3TotalPriceEUR" => isset($economyPricesEUR[2]) ? (double)($economyPricesEUR[2] * $economyFuel * $economyProfit * $economyVAT) : null
+        "weight3TotalPriceEUR" => isset($economyPricesEUR[2]) ? (double)($economyPricesEUR[2] * $economyFuel * $economyProfit * $economyVAT) : null,
+        "weight1NetPriceGBP" => isset($economyPrices[0]) ? (double)$economyPrices[0] : null,
+        "weight2NetPriceGBP" => isset($economyPrices[1]) ? (double)$economyPrices[1] : null,
+        "weight3NetPriceGBP" => isset($economyPrices[2]) ? (double)$economyPrices[2] : null,
+        "weight1TotalPriceGBP" => isset($economyPrices[0]) ? (double)($economyPrices[0] * $economyFuel * $economyProfit * $economyVAT) : null,
+        "weight2TotalPriceGBP" => isset($economyPrices[1]) ? (double)($economyPrices[1] * $economyFuel * $economyProfit * $economyVAT) : null,
+        "weight3TotalPriceGBP" => isset($economyPrices[2]) ? (double)($economyPrices[2] * $economyFuel * $economyProfit * $economyVAT) : null
     )
 );
 
