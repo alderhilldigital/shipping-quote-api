@@ -15,6 +15,9 @@ $destination = null;
 $weight1 = null;
 $weight2 = null;
 $weight3 = null;
+$originalWeight1 = null;
+$originalWeight2 = null;
+$originalWeight3 = null;
 $inclusions = null;
 $conversions = null;
 
@@ -24,6 +27,9 @@ if($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['key']) && isset($_GET['or
     $weight1 = isset($_GET['weight1']) ? $_GET['weight1'] : null;
     $weight2 = isset($_GET['weight2']) ? $_GET['weight2'] : null;
     $weight3 = isset($_GET['weight3']) ? $_GET['weight3'] : null;
+    $originalWeight1 = $weight1;
+    $originalWeight2 = $weight2;
+    $originalWeight3 = $weight3;
     $inclusions = isset($_GET['inclusions']) ? $_GET['inclusions'] : 0;
     $conversions = isset($_GET['conversions']) ? $_GET['conversions'] : 0;
 
@@ -379,13 +385,13 @@ foreach($economyPrices as $price) {
 
 $response = array(
     "passed" => array(
-        "origin" => $origin,
-        "destination" => $destination,
-        "weight1" => $weight1,
-        "weight2" => $weight2,
-        "weight3" => $weight3,
-        "inclusions" => $inclusions,
-        "conversions" => $conversions
+        "origin" => isset($origin) ? $origin : null,
+        "destination" => isset($destination) ? $destination : null,
+        "weight1" => isset($originalWeight1) ? $originalWeight1 : null,
+        "weight2" => isset($originalWeight2) ? $originalWeight2 : null,
+        "weight3" => isset($originalWeight3) ? $originalWeight3 : null,
+        "inclusions" => isset($inclusions) ? $inclusions : null,
+        "conversions" => isset($conversions) ? $conversions : null
     ),
     "express" => array(
         "weight1NetPriceEUR" => isset($expressPrices[0]) ? round($expressPrices[0], 2) : null,
@@ -418,6 +424,11 @@ $response = array(
 );
 
 // deciding what to return
+foreach($response["passed"] as $key => $value) {
+    if($value == null) {
+        unset($response['passed'][$key]);
+    }
+}
 foreach($response["express"] as $key => $value) {
     if(!$inclusions) {
         if(strpos($key, 'Total')) {
