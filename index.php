@@ -55,7 +55,8 @@ $conn = pg_connect("host=".$_ENV['DB_HOST']." dbname=".$_ENV['DB_NAME']." user="
 
 
 // express calculations
-$result = pg_query($conn, "SELECT express_zone FROM country_zones WHERE iso_code = '$origin';");
+//$result = pg_query($conn, "SELECT express_zone FROM country_zones WHERE iso_code = '$origin';");
+$result = pg_query_params($conn, "SELECT express_zone FROM country_zones WHERE iso_code = $1;", array($origin));
 $expressZone1 = null;
 if ($result) {
     while ($row = pg_fetch_row($result)) {
@@ -65,7 +66,8 @@ if ($result) {
 
 $expressPrices = array();
 if(!empty($expressZone1)) {
-    $result = pg_query($conn, "SELECT express_zone FROM country_zones WHERE iso_code = '$destination';");
+//    $result = pg_query($conn, "SELECT express_zone FROM country_zones WHERE iso_code = '$destination';");
+    $result = pg_query_params($conn, "SELECT express_zone FROM country_zones WHERE iso_code = $1;", array($destination));
     $expressZone2 = null;
     if($result) {
         while ($row = pg_fetch_row($result)) {
@@ -74,7 +76,8 @@ if(!empty($expressZone1)) {
     }
 
     if(!empty($expressZone2)) {
-        $result = pg_query($conn, "SELECT price_zone FROM zone_lookup WHERE start_zone = $expressZone1 AND end_zone = $expressZone2;");
+//        $result = pg_query($conn, "SELECT price_zone FROM zone_lookup WHERE start_zone = $expressZone1 AND end_zone = $expressZone2;");
+        $result = pg_query_params($conn, "SELECT price_zone FROM zone_lookup WHERE start_zone = $1 AND end_zone = $2;", array($expressZone1, $expressZone2));
         $expressPriceZone = null;
         if($result) {
             while ($row = pg_fetch_row($result)) {
@@ -96,8 +99,10 @@ if(!empty($expressZone1)) {
         $expressAdditions = array();
 
         // lookup values for this zone and
-        $query = 'SELECT amount FROM additional_values WHERE type = \'express\' AND zone = \''.$expressPriceZone.'\' ORDER BY amount ASC';
-        $result = pg_query($conn, $query);
+//        $query = 'SELECT amount FROM additional_values WHERE type = \'express\' AND zone = \''.$expressPriceZone.'\' ORDER BY amount ASC';
+//        $result = pg_query($conn, $query);
+        $query = 'SELECT amount FROM additional_values WHERE type = \'express\' AND zone = $1 ORDER BY amount ASC';
+        $result = pg_query_params($conn, $query, array($expressPriceZone));
         $below30 = pg_fetch_row($result)[0];
         $above30 = pg_fetch_row($result)[0];
 
@@ -144,26 +149,32 @@ if(!empty($expressZone1)) {
 
         // end weight calculations
 
+        $params = array($expressPriceZone);
 
         // weight1 is always supplied whether provided or the defaults are used
         $weight1Calc = $weight1 > 10 ? 10 : $weight1;
-        $query = "SELECT price, 1 AS ordering FROM weight_zone_price WHERE zone = '$expressPriceZone' AND weight = $weight1Calc";
+        array_push($params, $weight1Calc);
+        $query = "SELECT price, 1 AS ordering FROM weight_zone_price WHERE zone = $1 AND weight = $2";
 
         // if weight2 is provided add a union for this
         if(isset($weight2) && !empty($weight2)) {
             $weight2Calc = $weight2 > 10 ? 10 : $weight2;
-            $query .= " UNION ALL SELECT price, 2 AS ordering FROM weight_zone_price WHERE zone = '$expressPriceZone' AND weight = $weight2Calc";
+            array_push($params, $expressPriceZone);
+            array_push($params, $weight2Calc);
+            $query .= " UNION ALL SELECT price, 2 AS ordering FROM weight_zone_price WHERE zone = $3 AND weight = $4";
         }
 
         // if weight3 is provided add a union for this
         if(isset($weight3) && !empty($weight3)) {
             $weight3Calc = $weight3 > 10 ? 10 : $weight3;
-            $query .= " UNION ALL SELECT price, 3 AS ordering FROM weight_zone_price WHERE zone = '$expressPriceZone' AND weight = $weight3Calc";
+            array_push($params, $expressPriceZone);
+            array_push($params, $weight3Calc);
+            $query .= " UNION ALL SELECT price, 3 AS ordering FROM weight_zone_price WHERE zone = $5 AND weight = $6";
         }
 
         $query .= " ORDER BY ordering ASC";
 
-        $result = pg_query($conn, $query);
+        $result = pg_query_params($conn, $query, $params);
 
         $counter = 0;
         $selector = 0;
@@ -205,7 +216,8 @@ if(!empty($expressZone1)) {
 
 
 // economy calculations
-$result = pg_query($conn, "SELECT economy_zone FROM country_zones WHERE iso_code = '$origin';");
+//$result = pg_query($conn, "SELECT economy_zone FROM country_zones WHERE iso_code = '$origin';");
+$result = pg_query_params($conn, "SELECT economy_zone FROM country_zones WHERE iso_code = $1;", array($origin));
 $economyZone1 = null;
 if ($result) {
     while ($row = pg_fetch_row($result)) {
@@ -215,7 +227,8 @@ if ($result) {
 
 $economyPrices = array();
 if(!empty($economyZone1)) {
-    $result = pg_query($conn, "SELECT economy_zone FROM country_zones WHERE iso_code = '$destination';");
+//    $result = pg_query($conn, "SELECT economy_zone FROM country_zones WHERE iso_code = '$destination';");
+    $result = pg_query_params($conn, "SELECT economy_zone FROM country_zones WHERE iso_code = $1;", array($destination));
     $economyZone2 = null;
     if($result) {
         while ($row = pg_fetch_row($result)) {
@@ -224,7 +237,8 @@ if(!empty($economyZone1)) {
     }
 
     if(!empty($economyZone2)) {
-        $result = pg_query($conn, "SELECT price_zone FROM economy_zone_lookup WHERE start_zone = $economyZone1 AND end_zone = $economyZone2;");
+//        $result = pg_query($conn, "SELECT price_zone FROM economy_zone_lookup WHERE start_zone = $economyZone1 AND end_zone = $economyZone2;");
+        $result = pg_query_params($conn, "SELECT price_zone FROM economy_zone_lookup WHERE start_zone = $1 AND end_zone = $2;", array($economyZone1, $economyZone2));
         $economyPriceZone = null;
         if($result) {
             while ($row = pg_fetch_row($result)) {
@@ -246,8 +260,9 @@ if(!empty($economyZone1)) {
         $economyAdditions = array();
 
         // lookup values for this zone and
-        $query = 'SELECT amount FROM additional_values WHERE type = \'economy\' AND zone = \''.$economyPriceZone.'\' ORDER BY amount ASC';
-        $result = pg_query($conn, $query);
+//        $query = 'SELECT amount FROM additional_values WHERE type = \'economy\' AND zone = \''.$economyPriceZone.'\' ORDER BY amount ASC';
+        $query = 'SELECT amount FROM additional_values WHERE type = \'economy\' AND zone = $1 ORDER BY amount ASC';
+        $result = pg_query_params($conn, $query, array($economyPriceZone));
         $below70 = pg_fetch_row($result)[0];
         $above70 = pg_fetch_row($result)[0];
 
@@ -292,26 +307,32 @@ if(!empty($economyZone1)) {
         }
         // end weight calculations
 
+        $params = array($economyPriceZone);
 
         //weight1 is always supplied whether provided or the defaults are used
         $weight1Calc = $weight1 > 30 ? 30 : $weight1;
-        $query = "SELECT price, 1 AS ordering FROM economy_weight_zone_price WHERE zone = '$economyPriceZone' AND weight = $weight1Calc";
+        array_push($params, $weight1Calc);
+        $query = "SELECT price, 1 AS ordering FROM economy_weight_zone_price WHERE zone = $1 AND weight = $2";
 
         // if weight2 is provided add a union for this
         if(isset($weight2) && !empty($weight2)) {
             $weight2Calc = $weight2 > 30 ? 30 : $weight2;
-            $query .= " UNION ALL SELECT price, 2 AS ordering FROM economy_weight_zone_price WHERE zone = '$economyPriceZone' AND weight = $weight2Calc";
+            array_push($params, $economyPriceZone);
+            array_push($params, $weight2Calc);
+            $query .= " UNION ALL SELECT price, 2 AS ordering FROM economy_weight_zone_price WHERE zone = $3 AND weight = $4";
         }
 
         // if weight3 is provided add a union for this
         if(isset($weight3) && !empty($weight3)) {
             $weight3Calc = $weight3 > 30 ? 30 : $weight3;
-            $query .= " UNION ALL SELECT price, 3 AS ordering FROM economy_weight_zone_price WHERE zone = '$economyPriceZone' AND weight = $weight3Calc";
+            array_push($params, $economyPriceZone);
+            array_push($params, $weight3Calc);
+            $query .= " UNION ALL SELECT price, 3 AS ordering FROM economy_weight_zone_price WHERE zone = $5 AND weight = $6";
         }
 
         $query .= " ORDER BY ordering ASC";
 
-        $result = pg_query($conn, $query);
+        $result = pg_query_params($conn, $query, $params);
 
         $counter = 0;
         $selector = 0;
