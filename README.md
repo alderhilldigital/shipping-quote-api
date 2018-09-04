@@ -12,7 +12,7 @@ This api accepts an API Key, an Origin, a Destination, 0 - 3 weights and options
 - destination (string) - this is a 2 letter iso country code
 
 If the api key is not provided, the api will return a 401 header response.
-If an origin or destination is not provided, only the parameters passed in will be returned.
+If an origin or destination is not provided, only the parameters passed in will be returned with a message of the missing parameter.
 
 ### Example Request
 http://44.44.44.44/?key=123456789101112&origin=FR&destination=DE
