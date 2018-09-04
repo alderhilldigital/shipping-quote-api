@@ -457,7 +457,7 @@ foreach($response["express"] as $key => $value) {
         }
     }
     if(!$conversions) {
-        if(strpos($key, 'EUR')) {
+        if(strpos($key, 'GBP')) {
             unset($response['express'][$key]);
         }
     }
@@ -473,7 +473,7 @@ foreach($response["economy"] as $key => $value) {
         }
     }
     if(!$conversions) {
-        if(strpos($key, 'GBP')) {
+        if(strpos($key, 'EUR')) {
             unset($response['economy'][$key]);
         }
     }
